@@ -116,6 +116,16 @@ class VoiceEncoder(nn.Module):
 
         return wav_slices, mel_slices
 
+
+    def embed(self, mel: torch.Tensor):
+        """mel (batch_size, mel_slices, time_size, mel_dims)
+        """
+        batch_size, mel_slices, time_size, mel_dims = mel.shape
+        mel = mel.view(-1, time_size, mel_dims)
+        outputs = self.forward(mel)
+        return outputs.view(batch_size, mel_slices, 256)
+
+
     def embed_utterance(self, wav: np.ndarray, return_partials=False, rate=1.3, min_coverage=0.75):
         """
         Computes an embedding for a single utterance. The utterance is divided in partial
