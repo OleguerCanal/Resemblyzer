@@ -24,6 +24,11 @@ _my_colors = np.array([
     [0, 0, 0],
     [183, 183, 183],
     [76, 255, 0],
+    [123, 123, 0],
+    [0, 123, 0],
+    [123, 255, 123],
+    [123, 0, 123],
+    [123, 50, 50],
 ], dtype=np.float) / 255 
 
 
@@ -101,10 +106,12 @@ def plot_projections(embeds, speakers, ax=None, colors=None, markers=None, legen
     speakers = np.array(speakers)
     colors = colors or _my_colors
     for i, speaker in enumerate(np.unique(speakers)):
+        if speaker == -1:
+            continue
         speaker_projs = projs[speakers == speaker]
         marker = "o" if markers is None else markers[i]
         label = speaker if legend else None
-        ax.scatter(*speaker_projs.T, c=[colors[i]], marker=marker, label=label)
+        ax.scatter(*speaker_projs.T, c=[colors[i]], marker=marker, label=label, s=2, alpha=0.5)
 
     if legend:
         ax.legend(title="Speakers", ncol=2)
@@ -113,7 +120,7 @@ def plot_projections(embeds, speakers, ax=None, colors=None, markers=None, legen
     ax.set_yticks([])
     ax.set_aspect("equal")
     
-    return projs
+    return ax
     
 
 def interactive_diarization(similarity_dict, wav, wav_splits, x_crop=5, show_time=False):
